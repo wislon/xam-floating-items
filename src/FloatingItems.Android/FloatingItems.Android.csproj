@@ -84,11 +84,17 @@
     <AndroidResource Include="Resources\drawable\Icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Content\black_wallet.png" />
+    <AndroidAsset Include="Assets\Content\camera_1.png" />
+    <AndroidAsset Include="Assets\Content\camera_2.png" />
+    <AndroidAsset Include="Assets\Content\camera_3.png" />
+    <AndroidAsset Include="Assets\Content\camera_sports.png" />
+    <AndroidAsset Include="Assets\Content\cordless_iron.png" />
+    <AndroidAsset Include="Assets\Content\red_beats.png" />
+    <AndroidAsset Include="Assets\Content\sunglasses.png" />
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\Content\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.
