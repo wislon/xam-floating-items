@@ -27,11 +27,13 @@ namespace FloatingItems.Android
         public override void ApplicationDidEnterBackground(CCApplication application)
         {
             base.ApplicationDidEnterBackground(application);
+            application.Paused = true;
         }
 
         public override void ApplicationWillEnterForeground(CCApplication application)
         {
             base.ApplicationWillEnterForeground(application);
+            application.Paused = false;
         }
     }
 }
