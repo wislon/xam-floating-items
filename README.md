@@ -1,5 +1,5 @@
 # xam-floating-items
-Xamarin CocosSharp floating animated items example
+Xamarin Android CocosSharp floating animated items example
 
 Loads some images from the project assets and floats them around the screen with random speeds, positions and rotations.
 
