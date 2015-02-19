@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -10,10 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace FloatingItems.Android
 {
-    [Activity(Label = "FloatingItems.Android", 
-        AlwaysRetainTaskState = true,
-
-        MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "FloatingItems.Android", AlwaysRetainTaskState = true, MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : AndroidGameActivity
     {
 
@@ -21,9 +19,10 @@ namespace FloatingItems.Android
         {
             base.OnCreate(bundle);
 
-            var application = new CCApplication();
+            string[] assetImageNames = Assets.List("Content").Where(a => a.ToLowerInvariant().EndsWith(".png")).ToArray();
 
-            application.ApplicationDelegate = new FloatingAppDelegate();
+            var application = new CCApplication { ApplicationDelegate = new FloatingAppDelegate(assetImageNames) };
+
             SetContentView(application.AndroidContentView);
             application.StartGame();
 
