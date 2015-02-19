@@ -6,11 +6,15 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using CocosSharp;
+using Microsoft.Xna.Framework;
 
 namespace FloatingItems.Android
 {
-    [Activity(Label = "FloatingItems.Android", MainLauncher = true, Icon = "@drawable/icon")]
-    public class MainActivity : Activity
+    [Activity(Label = "FloatingItems.Android", 
+        AlwaysRetainTaskState = true,
+
+        MainLauncher = true, Icon = "@drawable/icon")]
+    public class MainActivity : AndroidGameActivity
     {
 
         protected override void OnCreate(Bundle bundle)
