@@ -2,7 +2,7 @@
 
 namespace FloatingItems.Android
 {
-    public class GameScene : CCScene
+    public class FloatingScene : CCScene
     {
         private float xVelocity;
         private float yVelocity;
@@ -18,7 +18,7 @@ namespace FloatingItems.Android
         const float MinYVelocity = -300;
         const float MaxYVelocity = 300;
 
-        public GameScene(CCWindow window) : base(window)
+        public FloatingScene(CCWindow window) : base(window)
         {
             var mainLayer = new CCLayer();
             AddChild(mainLayer);

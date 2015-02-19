@@ -23,7 +23,7 @@ namespace FloatingItems.Android
 
             var application = new CCApplication();
 
-            application.ApplicationDelegate = new GameAppDelegate();
+            application.ApplicationDelegate = new FloatingAppDelegate();
             SetContentView(application.AndroidContentView);
             application.StartGame();
 

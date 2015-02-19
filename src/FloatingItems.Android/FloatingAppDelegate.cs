@@ -2,7 +2,7 @@
 
 namespace FloatingItems.Android
 {
-    public class GameAppDelegate : CCApplicationDelegate
+    public class FloatingAppDelegate : CCApplicationDelegate
     {
         public override void ApplicationDidFinishLaunching(CCApplication application, CCWindow mainWindow)
         {
@@ -13,7 +13,7 @@ namespace FloatingItems.Android
             var bounds = mainWindow.WindowSizeInPixels;
             CCScene.SetDefaultDesignResolution(bounds.Width, bounds.Height, CCSceneResolutionPolicy.ShowAll);
 
-            var gameScene = new GameScene(mainWindow);
+            var gameScene = new FloatingScene(mainWindow);
             mainWindow.RunWithScene(gameScene);
 
         }
