@@ -40,7 +40,22 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="box2d">
+      <HintPath>..\packages\CocosSharp.Android.1.3.1.0\lib\MonoAndroid10\box2d.dll</HintPath>
+    </Reference>
+    <Reference Include="CocosSharp">
+      <HintPath>..\packages\CocosSharp.Android.1.3.1.0\lib\MonoAndroid10\CocosSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\CocosSharp.Android.1.3.1.0\lib\MonoAndroid10\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lidgren.Network">
+      <HintPath>..\packages\CocosSharp.Android.1.3.1.0\lib\MonoAndroid10\Lidgren.Network.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android" />
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\packages\CocosSharp.Android.1.3.1.0\lib\MonoAndroid10\MonoGame.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
@@ -67,12 +83,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AndroidManifest.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FloatingItems.Shared\FloatingItems.Shared.csproj">
-      <Project>{4ad64c11-5528-4dd9-b19f-d241e5b5befe}</Project>
-      <Name>FloatingItems.Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
