@@ -15,7 +15,7 @@ namespace FloatingItems.Android
 
         const float MinXVelocity = -300;
         const float MaxXVelocity = 300;
-        const float MinYVelocity = - 300;
+        const float MinYVelocity = -300;
         const float MaxYVelocity = 300;
 
         public GameScene(CCWindow window) : base(window)
@@ -23,7 +23,7 @@ namespace FloatingItems.Android
             var mainLayer = new CCLayer();
             AddChild(mainLayer);
 
-            headphoneSprite = new CCSprite("red_beats") {PositionX = 100, PositionY = 100, Scale = 0.5f};
+            headphoneSprite = new CCSprite("red_beats") {PositionX = 500, PositionY = 500, Scale = 0.5f};
             mainLayer.AddChild(headphoneSprite);
 
             xVelocity = CCRandom.GetRandomFloat(MinXVelocity, MaxXVelocity);
@@ -41,9 +41,25 @@ namespace FloatingItems.Android
 
         private void RunFloatingLogic(float frameTimeInSeconds)
         {
-            float currentX = xVelocity * frameTimeInSeconds;
-            float currentY = yVelocity * frameTimeInSeconds;
+            float currentX = headphoneSprite.PositionX + xVelocity * frameTimeInSeconds;
+            float currentY = headphoneSprite.PositionY + yVelocity * frameTimeInSeconds;
             headphoneSprite.Position = new CCPoint(currentX, currentY);
+
+            float headphoneSpriteRight = headphoneSprite.BoundingBoxTransformedToParent.MaxX;
+            float headphoneSpriteLeft = headphoneSprite.BoundingBoxTransformedToParent.MinX;
+            float headphoneSpriteTop = headphoneSprite.BoundingBoxTransformedToParent.MaxY;
+            float headphoneSpriteBottom = headphoneSprite.BoundingBoxTransformedToParent.MinY;
+
+            bool shouldReflectXVelocity = headphoneSpriteRight > screenRight && xVelocity > 0 ||
+                                          headphoneSpriteLeft < screenLeft && xVelocity < 0;
+
+            bool shouldReflectYVelocity = headphoneSpriteTop > screenTop && yVelocity > 0 ||
+                                          headphoneSpriteBottom < screenBottom && xVelocity < 0;
+
+            xVelocity = xVelocity * (shouldReflectXVelocity ? -1 : 1);
+            yVelocity = yVelocity * (shouldReflectYVelocity ? -1 : 1);
+
+
         }
     }
 }
