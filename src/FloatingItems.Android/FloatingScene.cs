@@ -17,6 +17,11 @@ namespace FloatingItems.Android
             var mainLayer = new CCLayer();
             AddChild(mainLayer);
 
+            var background = new CCSprite("background_640");
+            mainLayer.AddChild(background);
+            background.Position = mainLayer.VisibleBoundsWorldspace.Center;
+            background.ScaleTo(DesignResolutionSize);
+
             // get screen edges
             float screenRight = mainLayer.VisibleBoundsWorldspace.MaxX;
             float screenLeft = mainLayer.VisibleBoundsWorldspace.MinX;
