@@ -8,10 +8,10 @@ namespace FloatingItems.Android
         private float xVelocity;
         private float yVelocity;
         private readonly CCSprite headphoneSprite;
-        private float screenRight;
-        private float screenLeft;
-        private float screenTop;
-        private float screenBottom;
+        private readonly float screenRight;
+        private readonly float screenLeft;
+        private readonly float screenTop;
+        private readonly float screenBottom;
 
         const float MinXVelocity = -300;
         const float MaxXVelocity = 300;
@@ -23,17 +23,18 @@ namespace FloatingItems.Android
             var mainLayer = new CCLayer();
             AddChild(mainLayer);
 
-            headphoneSprite = new CCSprite("red_beats") {PositionX = 500, PositionY = 500, Scale = 0.5f};
-            mainLayer.AddChild(headphoneSprite);
-
-            xVelocity = CCRandom.GetRandomFloat(MinXVelocity, MaxXVelocity);
-            yVelocity = CCRandom.GetRandomFloat(MinYVelocity, MaxYVelocity);
-
             // get screen edges
             screenRight = mainLayer.VisibleBoundsWorldspace.MaxX;
             screenLeft = mainLayer.VisibleBoundsWorldspace.MinX;
             screenTop = mainLayer.VisibleBoundsWorldspace.MaxY;
             screenBottom = mainLayer.VisibleBoundsWorldspace.MinY;
+
+            headphoneSprite = new CCSprite("red_beats") {PositionX = screenRight / 2, PositionY = screenTop / 2, Scale = 0.5f};
+            mainLayer.AddChild(headphoneSprite);
+
+            xVelocity = CCRandom.GetRandomFloat(MinXVelocity, MaxXVelocity);
+            yVelocity = CCRandom.GetRandomFloat(MinYVelocity, MaxYVelocity);
+
 
 
             Schedule(RunFloatingLogic);
@@ -43,6 +44,12 @@ namespace FloatingItems.Android
         {
             float currentX = headphoneSprite.PositionX + xVelocity * frameTimeInSeconds;
             float currentY = headphoneSprite.PositionY + yVelocity * frameTimeInSeconds;
+
+            //if (currentX < screenLeft) currentX = screenRight;
+            //if (currentX > screenRight) currentX = screenLeft;
+            //if (currentY < screenBottom) currentY = screenTop;
+            //if (currentY > screenTop) currentY = screenBottom;
+
             headphoneSprite.Position = new CCPoint(currentX, currentY);
 
             float headphoneSpriteRight = headphoneSprite.BoundingBoxTransformedToParent.MaxX;
@@ -50,11 +57,12 @@ namespace FloatingItems.Android
             float headphoneSpriteTop = headphoneSprite.BoundingBoxTransformedToParent.MaxY;
             float headphoneSpriteBottom = headphoneSprite.BoundingBoxTransformedToParent.MinY;
 
-            bool shouldReflectXVelocity = headphoneSpriteRight > screenRight && xVelocity > 0 ||
-                                          headphoneSpriteLeft < screenLeft && xVelocity < 0;
+            bool shouldReflectXVelocity = headphoneSpriteRight >= screenRight && xVelocity > 0 ||
+                                          headphoneSpriteLeft <= screenLeft && xVelocity < 0;
 
-            bool shouldReflectYVelocity = headphoneSpriteTop > screenTop && yVelocity > 0 ||
-                                          headphoneSpriteBottom < screenBottom && xVelocity < 0;
+            bool shouldReflectYVelocity = headphoneSpriteTop >= screenTop && yVelocity > 0 ||
+                                          headphoneSpriteBottom <= screenBottom && xVelocity < 0;
+
 
             xVelocity = xVelocity * (shouldReflectXVelocity ? -1 : 1);
             yVelocity = yVelocity * (shouldReflectYVelocity ? -1 : 1);
