@@ -1,5 +1,4 @@
 ﻿using CocosSharp;
-using Java.Lang;
 
 namespace FloatingItems.Android
 {
