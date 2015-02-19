@@ -4,16 +4,22 @@ namespace FloatingItems.Android
 {
     public class FloatingAppDelegate : CCApplicationDelegate
     {
+        private readonly string[] assetImageNames;
+
+        public FloatingAppDelegate(string[] assetImageNames)
+        {
+            this.assetImageNames = assetImageNames;
+        }
+
         public override void ApplicationDidFinishLaunching(CCApplication application, CCWindow mainWindow)
         {
-            //base.ApplicationDidFinishLaunching(application, mainWindow);
             application.PreferMultiSampling = false;
             application.ContentRootDirectory = "Content";
 
             var bounds = mainWindow.WindowSizeInPixels;
             CCScene.SetDefaultDesignResolution(bounds.Width, bounds.Height, CCSceneResolutionPolicy.ShowAll);
 
-            var gameScene = new FloatingScene(mainWindow);
+            var gameScene = new FloatingScene(mainWindow, assetImageNames);
             mainWindow.RunWithScene(gameScene);
 
         }
