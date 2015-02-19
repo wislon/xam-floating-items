@@ -13,7 +13,8 @@ namespace FloatingItems.Android
             var bounds = mainWindow.WindowSizeInPixels;
             CCScene.SetDefaultDesignResolution(bounds.Width, bounds.Height, CCSceneResolutionPolicy.ShowAll);
 
-            // TODO game scene init goes here.
+            var gameScene = new GameScene(mainWindow);
+            mainWindow.RunWithScene(gameScene);
 
         }
 
