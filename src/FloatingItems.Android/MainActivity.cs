@@ -19,7 +19,7 @@ namespace FloatingItems.Android
         {
             base.OnCreate(bundle);
 
-            string[] assetImageNames = Assets.List("Content").Where(a => a.ToLowerInvariant().EndsWith(".png")).ToArray();
+            string[] assetImageNames = Assets.List("Content").Where(a => (!a.Contains("background") && a.ToLowerInvariant().EndsWith(".png"))).ToArray();
 
             var application = new CCApplication { ApplicationDelegate = new FloatingAppDelegate(assetImageNames) };
 
