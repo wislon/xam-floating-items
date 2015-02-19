@@ -1,24 +1,27 @@
-﻿using CocosSharp;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Android.Animation;
+using CocosSharp;
 
 namespace FloatingItems.Android
 {
     public class FloatingScene : CCScene
     {
-        private float xVelocity;
-        private float yVelocity;
-        private readonly CCSprite headphoneSprite;
         private readonly float screenRight;
         private readonly float screenLeft;
         private readonly float screenTop;
         private readonly float screenBottom;
-        private CCRotateBy rotateSprite;
 
         const float MinXVelocity = -300;
         const float MaxXVelocity = 300;
         const float MinYVelocity = -300;
         const float MaxYVelocity = 300;
 
-        public FloatingScene(CCWindow window) : base(window)
+        private List<SpriteObject> sprites;
+
+        public FloatingScene(CCWindow window, string[] assetImageNames) : base(window)
         {
             var mainLayer = new CCLayer();
             AddChild(mainLayer);
@@ -29,47 +32,120 @@ namespace FloatingItems.Android
             screenTop = mainLayer.VisibleBoundsWorldspace.MaxY;
             screenBottom = mainLayer.VisibleBoundsWorldspace.MinY;
 
-            headphoneSprite = new CCSprite("red_beats") {PositionX = screenRight / 2, PositionY = screenTop / 2, Scale = 0.5f};
-            mainLayer.AddChild(headphoneSprite);
-            rotateSprite = new CCRotateBy(0.8f, 20);
-            headphoneSprite.RepeatForever(rotateSprite);
+            var screenBounds = new float[] {screenTop, screenLeft, screenRight, screenBottom};
 
-            xVelocity = CCRandom.GetRandomFloat(MinXVelocity, MaxXVelocity);
-            yVelocity = CCRandom.GetRandomFloat(MinYVelocity, MaxYVelocity);
+            sprites = new List<SpriteObject>(assetImageNames.Length);
+            foreach (var assetImageName in assetImageNames)
+            {
+                var positionX = CCRandom.GetRandomFloat(0, screenRight);
+                var positionY = CCRandom.GetRandomFloat(0, screenTop);
+                var velocityX = CCRandom.GetRandomFloat(MinXVelocity, MaxXVelocity);
+                var velocityY = CCRandom.GetRandomFloat(MinYVelocity, MaxYVelocity);
+                var scaleFactor = CCRandom.GetRandomFloat(0.2f, 1.2f);
+                var rotationFactor = CCRandom.GetRandomFloat(-20f, 20f);
+                var sprite = new SpriteObject(assetImageName, positionX, positionY, screenBounds, velocityX, velocityY, scaleFactor, rotationFactor);
+                mainLayer.AddChild(sprite.Sprite);
+                sprites.Add(sprite);
+            }
 
 
+            //CCSprite headphoneSprite = new CCSprite("red_beats") {PositionX = screenRight / 2, PositionY = screenTop / 2, Scale = 0.5f};
+            //mainLayer.AddChild(headphoneSprite);
+
+            //var rotateSprite = new CCRotateBy(0.8f, 20);
+            //headphoneSprite.RepeatForever(rotateSprite);
 
             Schedule(RunFloatingLogic);
         }
 
         private void RunFloatingLogic(float frameTimeInSeconds)
         {
-            float currentX = headphoneSprite.PositionX + xVelocity * frameTimeInSeconds;
-            float currentY = headphoneSprite.PositionY + yVelocity * frameTimeInSeconds;
+            foreach (var spriteObject in sprites)
+            {
+                spriteObject.DoAllInternalUpdates(frameTimeInSeconds);
+            }
+        }
+    }
 
-            //if (currentX < screenLeft) currentX = screenRight;
-            //if (currentX > screenRight) currentX = screenLeft;
-            //if (currentY < screenBottom) currentY = screenTop;
-            //if (currentY > screenTop) currentY = screenBottom;
+    public class SpriteObject
+    {
+        readonly float screenRight;
+        readonly float screenLeft;
+        readonly float screenTop;
+        readonly float screenBottom;
 
-            headphoneSprite.Position = new CCPoint(currentX, currentY);
+        float spriteLeft;
+        float spriteRight;
+        float spriteTop;
+        float spriteBottom;
 
-            float headphoneSpriteRight = headphoneSprite.BoundingBoxTransformedToParent.MaxX;
-            float headphoneSpriteLeft = headphoneSprite.BoundingBoxTransformedToParent.MinX;
-            float headphoneSpriteTop = headphoneSprite.BoundingBoxTransformedToParent.MaxY;
-            float headphoneSpriteBottom = headphoneSprite.BoundingBoxTransformedToParent.MinY;
+        public CCSprite Sprite { get; set; }
 
-            bool shouldReflectXVelocity = headphoneSpriteRight >= screenRight && xVelocity > 0 ||
-                                          headphoneSpriteLeft <= screenLeft && xVelocity < 0;
+        public float CurrentX { get; set; }
+        public float CurrentY { get; set; }
 
-            bool shouldReflectYVelocity = headphoneSpriteTop >= screenTop && yVelocity > 0 ||
-                                          headphoneSpriteBottom <= screenBottom && xVelocity < 0;
-
-
-            xVelocity = xVelocity * (shouldReflectXVelocity ? -1 : 1);
-            yVelocity = yVelocity * (shouldReflectYVelocity ? -1 : 1);
+        public float VelocityX { get; set; }
+        public float VelocityY { get; set; }
 
 
+        public SpriteObject(string assetName, float positionX, float positionY, float[] screenBounds, float velocityX = 0, float velocityY = 0, float scaleFactor = 1, float rotationFactor = 0)
+        {
+            Sprite = new CCSprite(assetName) {PositionX = positionX, PositionY = positionY, Scale = scaleFactor};
+            screenTop = screenBounds[0]; screenLeft = screenBounds[1]; screenRight = screenBounds[2]; screenBottom = screenBounds[3];
+
+            if (Math.Abs(rotationFactor) > 0.00)
+            {
+                var rotation = new CCRotateBy(0.8f, rotationFactor);
+                Sprite.RepeatForever(rotation);
+            }
+
+            VelocityX = velocityX;
+            VelocityY = velocityY;
+            DoAllInternalUpdates(0f);
+        }
+
+        /// <summary>
+        /// Causes this object to run all its internal updates, to determine position, velocity,
+        /// position in relation to parent, etc.
+        /// Will be called each time a new animation refresh occurs, so keep this
+        /// as quick as you can!
+        /// </summary>
+        public void DoAllInternalUpdates(float frameTimeInSeconds)
+        {
+            UpdateBoundingBoxInTermsOfParent(frameTimeInSeconds);
+
+            if (Math.Abs(VelocityX) > 0.00 || Math.Abs(VelocityY) > 0.00)
+            {
+                CalculateVelocities(frameTimeInSeconds);
+            }
+            CalculateCurrentPosition(frameTimeInSeconds);
+        }
+
+        private void CalculateVelocities(float frameTimeInSeconds)
+        {
+            bool shouldReflectXVelocity = spriteRight >= screenRight && VelocityX > 0 ||
+                                          spriteLeft <= screenLeft && VelocityX < 0;
+
+            bool shouldReflectYVelocity = spriteTop >= screenTop && VelocityY > 0 ||
+                                          spriteBottom <= screenBottom && VelocityY < 0;
+
+
+            VelocityX = VelocityX * (shouldReflectXVelocity ? -1 : 1);
+            VelocityY = VelocityY * (shouldReflectYVelocity ? -1 : 1);
+        }
+
+        void UpdateBoundingBoxInTermsOfParent(float frameTimeInSeconds)
+        {
+            spriteLeft = Sprite.BoundingBoxTransformedToParent.MinX;
+            spriteRight = Sprite.BoundingBoxTransformedToParent.MaxX;
+            spriteTop = Sprite.BoundingBoxTransformedToParent.MaxY;
+            spriteBottom = Sprite.BoundingBoxTransformedToParent.MinY;
+        }
+        private void CalculateCurrentPosition(float frameTimeInSeconds)
+        {
+            CurrentX = Sprite.PositionX + VelocityX * frameTimeInSeconds;
+            CurrentY = Sprite.PositionY + VelocityY * frameTimeInSeconds;
+            Sprite.Position = new CCPoint(CurrentX, CurrentY);
         }
     }
 }
