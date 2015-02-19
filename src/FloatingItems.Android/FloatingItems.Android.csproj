@@ -92,6 +92,7 @@
     <AndroidAsset Include="Assets\Content\cordless_iron.png" />
     <AndroidAsset Include="Assets\Content\red_beats.png" />
     <AndroidAsset Include="Assets\Content\sunglasses.png" />
+    <AndroidAsset Include="Assets\Content\olaf_pillow.png" />
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup />

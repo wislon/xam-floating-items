@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using Android.Animation;
 using CocosSharp;
 
 namespace FloatingItems.Android
 {
     public class FloatingScene : CCScene
     {
-        private readonly float screenRight;
-        private readonly float screenLeft;
-        private readonly float screenTop;
-        private readonly float screenBottom;
-
         const float MinXVelocity = -300;
         const float MaxXVelocity = 300;
         const float MinYVelocity = -300;
         const float MaxYVelocity = 300;
 
-        private List<SpriteObject> sprites;
+        private readonly List<SpriteObject> spritesList;
 
         public FloatingScene(CCWindow window, string[] assetImageNames) : base(window)
         {
@@ -27,14 +19,14 @@ namespace FloatingItems.Android
             AddChild(mainLayer);
 
             // get screen edges
-            screenRight = mainLayer.VisibleBoundsWorldspace.MaxX;
-            screenLeft = mainLayer.VisibleBoundsWorldspace.MinX;
-            screenTop = mainLayer.VisibleBoundsWorldspace.MaxY;
-            screenBottom = mainLayer.VisibleBoundsWorldspace.MinY;
+            float screenRight = mainLayer.VisibleBoundsWorldspace.MaxX;
+            float screenLeft = mainLayer.VisibleBoundsWorldspace.MinX;
+            float screenTop = mainLayer.VisibleBoundsWorldspace.MaxY;
+            float screenBottom = mainLayer.VisibleBoundsWorldspace.MinY;
 
             var screenBounds = new float[] {screenTop, screenLeft, screenRight, screenBottom};
 
-            sprites = new List<SpriteObject>(assetImageNames.Length);
+            spritesList = new List<SpriteObject>(assetImageNames.Length);
             foreach (var assetImageName in assetImageNames)
             {
                 var positionX = CCRandom.GetRandomFloat(0, screenRight);
@@ -45,7 +37,7 @@ namespace FloatingItems.Android
                 var rotationFactor = CCRandom.GetRandomFloat(-20f, 20f);
                 var sprite = new SpriteObject(assetImageName, positionX, positionY, screenBounds, velocityX, velocityY, scaleFactor, rotationFactor);
                 mainLayer.AddChild(sprite.Sprite);
-                sprites.Add(sprite);
+                spritesList.Add(sprite);
             }
 
 
@@ -60,7 +52,7 @@ namespace FloatingItems.Android
 
         private void RunFloatingLogic(float frameTimeInSeconds)
         {
-            foreach (var spriteObject in sprites)
+            foreach (var spriteObject in spritesList)
             {
                 spriteObject.DoAllInternalUpdates(frameTimeInSeconds);
             }
