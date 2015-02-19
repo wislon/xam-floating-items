@@ -68,6 +68,12 @@
   <ItemGroup>
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FloatingItems.Shared\FloatingItems.Shared.csproj">
+      <Project>{4ad64c11-5528-4dd9-b19f-d241e5b5befe}</Project>
+      <Name>FloatingItems.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.
