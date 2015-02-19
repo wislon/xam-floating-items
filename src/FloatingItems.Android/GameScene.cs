@@ -11,6 +11,7 @@ namespace FloatingItems.Android
         private readonly float screenLeft;
         private readonly float screenTop;
         private readonly float screenBottom;
+        private CCRotateBy rotateSprite;
 
         const float MinXVelocity = -300;
         const float MaxXVelocity = 300;
@@ -30,6 +31,8 @@ namespace FloatingItems.Android
 
             headphoneSprite = new CCSprite("red_beats") {PositionX = screenRight / 2, PositionY = screenTop / 2, Scale = 0.5f};
             mainLayer.AddChild(headphoneSprite);
+            rotateSprite = new CCRotateBy(0.8f, 20);
+            headphoneSprite.RepeatForever(rotateSprite);
 
             xVelocity = CCRandom.GetRandomFloat(MinXVelocity, MaxXVelocity);
             yVelocity = CCRandom.GetRandomFloat(MinYVelocity, MaxYVelocity);
